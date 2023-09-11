@@ -8,9 +8,10 @@ import pics
 http = urllib3.PoolManager()
 
 with open("apiKey.txt", "r") as file:
-    imgGen_Key, apiMaps_key, weatherApiKey = file.readlines()
+    keys = json.load(file)
+    imgGen_key, mapsApi_key, weatherApi_key = keys["imgGen_key"], keys["mapsApi_key"], keys["weatherApi_key"]
 parent_dir = os.getcwd()+'/generatedImages/'
-map_client = googlemaps.Client(apiMaps_key)
+map_client = googlemaps.Client(mapsApi_key)
 #(lat, lng) = (40.752250, -73.981064)
 lat = float(input("lat. : "))
 lng = float(input("lon. : "))
@@ -112,7 +113,7 @@ else:
 ### location ###
 
 ### weather and date ###
-url = f"api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid={weatherApiKey}&units=metric"
+url = f"api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid={weatherApi_key}&units=metric"
 try:
     responseD = json.loads(http.request("GET", url).data)
 except Exception as error:
@@ -169,7 +170,7 @@ print(colored(prompt, "yellow"))
 if input('\ngenerate image ? (y/n)') == 'y':
     url = "https://stablediffusionapi.com/api/v3/text2img"
     payload = json.dumps({
-        "key": imgGen_Key,
+        "key": imgGen_key,
         "prompt": prompt,
         "negative_prompt": None,
         "width": 1024,
@@ -192,7 +193,7 @@ if input('\ngenerate image ? (y/n)') == 'y':
         raise SystemExit
 
     print(f'\"{responseE["id"]}\":[{timeStamp}, \"{country}\", \"{prompt}\"]')
-    generatingStatus, urls = pics.get_url(responseE['id'], imgGen_Key, 10)
+    generatingStatus, urls = pics.get_url(responseE['id'], imgGen_key, 10)
 
     try:
         with open('failed_downloads.json', 'r') as file:
@@ -216,7 +217,7 @@ if input('\ngenerate image ? (y/n)') == 'y':
     for failed_download in failed_downloads.copy().items():
         id, [date, country, prompt] = failed_download
         print(f'\ntrying to download {id} : ', end="")
-        generatingStatus, urls = pics.get_url(id, imgGen_Key, 1)
+        generatingStatus, urls = pics.get_url(id, imgGen_key, 1)
         if generatingStatus == 'error':
             del failed_downloads[id]
             print(colored('generation failed','red'))
