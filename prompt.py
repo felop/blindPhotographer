@@ -1,5 +1,3 @@
-# GET GPS DATA
-
 import googlemaps, urllib3, json,requests, time, shutil, os
 from datetime import datetime
 from termcolor import colored
@@ -13,7 +11,9 @@ with open("apiKey.txt", "r") as file:
     imgGen_Key, apiMaps_key, weatherApiKey = file.readlines()
 parent_dir = os.getcwd()+'/generatedImages/'
 map_client = googlemaps.Client(apiMaps_key)
-(lat, lng) = (40.752250, -73.981064)
+#(lat, lng) = (40.752250, -73.981064)
+lat = float(input("lat. : "))
+lng = float(input("lon. : "))
 pics_format = [576,784][0]
 
 def get_city_wikidata(city, country):
@@ -112,7 +112,6 @@ else:
 ### location ###
 
 ### weather and date ###
-weatherApiKey = "bd374f5d7ed14f555422bfec34751c22"
 url = f"api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid={weatherApiKey}&units=metric"
 try:
     responseD = json.loads(http.request("GET", url).data)
