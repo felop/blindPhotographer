@@ -22,14 +22,18 @@ def download(urls, path, timestamp, prompt, addr=None):
         dir_name = f'{timestamp}_{datetime.fromtimestamp(timestamp).strftime("%d%B%Y")}_{addr}'
     else:
         dir_name = f'{timestamp}_{datetime.fromtimestamp(timestamp).strftime("%d%B%Y")}'
-    path = os.path.join(path, dir_name)
-    os.mkdir(path)
+    fullpath = os.path.join(path, dir_name)
+    try:
+        os.mkdir(fullpath)
+    except FileNotFoundError:
+        os.mkdir(path)
+        os.mkdir(fullpath)
     try:
         for i in range(len(urls)):
-            with open(f'{path}/image_{i}.png', 'wb') as out:
+            with open(f'{fullpath}/image_{i}.png', 'wb') as out:
                 r = http.request('GET', urls[i], preload_content=False)
                 shutil.copyfileobj(r, out)
-        with open(f'{path}/prompt.txt', 'w') as file:
+        with open(f'{fullpath}/prompt.txt', 'w') as file:
             file.write(prompt)
     except Exception as error:
         print('[', colored('ERROR', 'red'), '] download failed :', error)

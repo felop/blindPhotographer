@@ -10,10 +10,10 @@ import pics
 http = urllib3.PoolManager()
 
 with open("apiKey.txt", "r") as file:
-    imgGen_Key, apiMaps_key = file.readlines()
+    imgGen_Key, apiMaps_key, weatherApiKey = file.readlines()
 parent_dir = os.getcwd()+'/generatedImages/'
 map_client = googlemaps.Client(apiMaps_key)
-(lat, lng) = (48.583521, -2.569389)
+(lat, lng) = (40.752250, -73.981064)
 pics_format = [576,784][0]
 
 def get_city_wikidata(city, country):
@@ -195,8 +195,13 @@ if input('\ngenerate image ? (y/n)') == 'y':
     print(f'\"{responseE["id"]}\":[{timeStamp}, \"{country}\", \"{prompt}\"]')
     generatingStatus, urls = pics.get_url(responseE['id'], imgGen_Key, 10)
 
-    with open('failed_downloads.json', 'r') as file:
-        failed_downloads = json.load(file)
+    try:
+        with open('failed_downloads.json', 'r') as file:
+            failed_downloads = json.load(file)
+    except FileNotFoundError:
+        with open('failed_downloads.json', 'w+') as file:
+            file.write("{}")
+            failed_downloads = json.load(file)
     country = addr['country'] if isLocated else None
 
     if generatingStatus == 'success':
