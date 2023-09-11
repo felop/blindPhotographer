@@ -215,15 +215,14 @@ if input('\ngenerate image ? (y/n)') == 'y':
 
     for failed_download in failed_downloads.copy().items():
         id, [date, country, prompt] = failed_download
-        generatingStatus, urls = pics.get_url(id, imgGen_Key, 1)
         print(f'\ntrying to download {id} : ', end="")
+        generatingStatus, urls = pics.get_url(id, imgGen_Key, 1)
         if generatingStatus == 'error':
             del failed_downloads[id]
-            print(colored('generation failed','red')
+            print(colored('generation failed','red'))
         elif generatingStatus == 'success':
             downloadStatus = pics.download(urls, parent_dir, date, prompt, country)
             if downloadStatus:
-                print(colored('download completed', 'green')
                 del failed_downloads[id]
     with open('failed_downloads.json', 'w') as file:
         json.dump(failed_downloads, file)
