@@ -209,17 +209,21 @@ if input('\ngenerate image ? (y/n)') == 'y':
         failed_downloads[responseE['id']] = [timeStamp, country, prompt]
         with open('failed_downloads.json', 'w') as file:
             json.dump(failed_downloads, file)
+        print('[',colored('TIMEOUT','orange'),f'] ({responseE["id"]}) images will be downloaded on next run')
     else:
-        print('picture can\'t be generated')
+        print('images can\'t be generated')
 
     for failed_download in failed_downloads.copy().items():
         id, [date, country, prompt] = failed_download
-        generatingStatus, urls = pics.get_url(id, imgGen_Key, 10)
+        generatingStatus, urls = pics.get_url(id, imgGen_Key, 1)
+        print(f'\ntrying to download {id} : ', end="")
         if generatingStatus == 'error':
             del failed_downloads[id]
+            print(colored('generation failed','red')
         elif generatingStatus == 'success':
             downloadStatus = pics.download(urls, parent_dir, date, prompt, country)
             if downloadStatus:
+                print(colored('download completed', 'green')
                 del failed_downloads[id]
     with open('failed_downloads.json', 'w') as file:
         json.dump(failed_downloads, file)

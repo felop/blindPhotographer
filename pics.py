@@ -14,6 +14,9 @@ def get_url(id, key, attempts=10):
         elif response['status'] == 'success':
             print('images processed')
             return response['status'], response['output']
+        elif response['status'] == 'error':
+            print('generation failed')
+            break
     return response['status'], None
 
 def download(urls, path, timestamp, prompt, addr=None):
