@@ -210,7 +210,7 @@ if input('\ngenerate image ? (y/n)') == 'y':
         failed_downloads[responseE['id']] = [timeStamp, country, prompt]
         with open('failed_downloads.json', 'w') as file:
             json.dump(failed_downloads, file)
-        print('[',colored('TIMEOUT','orange'),f'] ({responseE["id"]}) images will be downloaded on next run')
+        print('[',colored('TIMEOUT','yellow'),f'] ({responseE["id"]}) images will be downloaded on next run')
     else:
         print('images can\'t be generated')
 
